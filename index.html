@@ -274,6 +274,161 @@
       stroke-linejoin: round;
     }
 
+    /* ── Scene 4 : Academy ── */
+    #scene-academy {
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #000;
+      display: flex;
+      justify-content: center;
+    }
+
+    .academy-container {
+      width: 1440px;
+      min-width: 1440px;
+      padding: 60px 122px 113px 122px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 76px;
+    }
+
+    .back-btn-academy {
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+      font-family: 'HeirofLight', 'Sandoll HeirofLight', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: normal;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .back-btn-academy:hover { opacity: 0.75; }
+    .back-btn-academy img { width: 10px; height: auto; }
+
+    .academy-row {
+      display: flex;
+      gap: 28px;
+    }
+
+    .academy-card {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .academy-card-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #222;
+    }
+
+    /* 20% dim overlay */
+    .academy-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.20);
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    .academy-card-label {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: #fff;
+      font-family: 'HeirofLight', 'Sandoll HeirofLight', serif;
+      font-size: 18px;
+      font-weight: 700;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+      transition: opacity 0.3s ease;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .academy-card:hover::after { opacity: 0; }
+    .academy-card:hover .academy-card-label { opacity: 0; }
+
+    /* Back to top — academy */
+    .back-to-top-academy {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 200;
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, background 0.2s;
+    }
+
+    .back-to-top-academy.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-to-top-academy:hover { background: rgba(255, 255, 255, 0.25); }
+
+    .back-to-top-academy svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      cursor: pointer;
+    }
+
+    .lightbox-img {
+      position: relative;
+      z-index: 1;
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      display: block;
+    }
+
     /* ── Keyframes ── */
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
@@ -295,6 +450,74 @@
       <img class="title-img" src="resource/star_title.png" alt="사라진 별에 별들이 모여든다">
       <img class="btn-start" src="resource/btn_start.png" alt="START" id="btn-start">
     </div>
+  </div>
+
+  <!-- Scene 4 : Academy -->
+  <div class="scene hidden" id="scene-academy">
+
+    <div class="academy-container">
+
+      <!-- Back button -->
+      <button class="back-btn-academy" id="btn-back-academy">
+        <img src="resource/Vector 1.svg" alt="◀">
+        Back
+      </button>
+
+      <!-- Row 1 -->
+      <div class="academy-row">
+        <div class="academy-card" data-img="resource/img_campus.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_campus.png')"></div>
+          <span class="academy-card-label">캠퍼스 전경</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_classA.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_classA.png')"></div>
+          <span class="academy-card-label">A반 강의실</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_classB.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_classB.png')"></div>
+          <span class="academy-card-label">B반 강의실</span>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="academy-row">
+        <div class="academy-card" data-img="resource/img_classC.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_classC.png')"></div>
+          <span class="academy-card-label">C반 강의실</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_training_ground.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_training_ground.png')"></div>
+          <span class="academy-card-label">전투실습장</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_classD.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_classD.png')"></div>
+          <span class="academy-card-label">대강의실</span>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="academy-row">
+        <div class="academy-card" data-img="resource/img_rooftop.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_rooftop.png')"></div>
+          <span class="academy-card-label">천체관측소</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_library.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_library.png')"></div>
+          <span class="academy-card-label">도서관</span>
+        </div>
+        <div class="academy-card" data-img="resource/img_diningroom.png">
+          <div class="academy-card-bg" style="background-image:url('resource/img_diningroom.png')"></div>
+          <span class="academy-card-label">학생 식당</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Back to top -->
+    <button class="back-to-top-academy" id="btn-top-academy" aria-label="Back to top">
+      <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+
   </div>
 
   <!-- Scene 3 : Webtoon -->
@@ -337,7 +560,7 @@
 
         <!-- Three menu boxes -->
         <div class="menu-row">
-          <div class="menu-box"><span>ACADEMY</span></div>
+          <div class="menu-box" id="menu-academy"><span>ACADEMY</span></div>
           <div class="menu-box"><span>CHARACTER</span></div>
           <div class="menu-box" id="menu-webtoon"><span>WEBTOON</span></div>
         </div>
@@ -346,16 +569,31 @@
     </div>
   </div>
 
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-overlay" id="lightbox-close"></div>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  </div>
+
   <script>
-    const btnStart      = document.getElementById('btn-start');
-    const btnBack       = document.getElementById('btn-back');
-    const btnBackWebtoon= document.getElementById('btn-back-webtoon');
-    const menuWebtoon   = document.getElementById('menu-webtoon');
-    const btnTop        = document.getElementById('btn-top');
-    const sceneTitle    = document.getElementById('scene-title');
-    const sceneNext     = document.getElementById('scene-next');
-    const sceneWebtoon  = document.getElementById('scene-webtoon');
-    const inner         = document.getElementById('scene2-inner');
+    const btnStart        = document.getElementById('btn-start');
+    const btnBack         = document.getElementById('btn-back');
+    const btnBackWebtoon  = document.getElementById('btn-back-webtoon');
+    const btnBackAcademy  = document.getElementById('btn-back-academy');
+    const menuWebtoon     = document.getElementById('menu-webtoon');
+    const menuAcademy     = document.getElementById('menu-academy');
+    const btnTop          = document.getElementById('btn-top');
+    const btnTopAcademy   = document.getElementById('btn-top-academy');
+    const sceneTitle      = document.getElementById('scene-title');
+    const sceneNext       = document.getElementById('scene-next');
+    const sceneWebtoon    = document.getElementById('scene-webtoon');
+    const sceneAcademy    = document.getElementById('scene-academy');
+    const inner           = document.getElementById('scene2-inner');
+    const lightbox        = document.getElementById('lightbox');
+    const lightboxImg     = document.getElementById('lightbox-img');
+    const lightboxClose   = document.getElementById('lightbox-close');
+
+    const allScenes = [sceneTitle, sceneNext, sceneWebtoon, sceneAcademy];
 
     // Scale scene2 canvas to always fit the viewport
     function scaleInner() {
@@ -368,30 +606,52 @@
     window.addEventListener('resize', scaleInner);
 
     // Scene transitions
-    function showScene(show, ...hide) {
-      hide.forEach(s => s.classList.add('hidden'));
-      show.classList.remove('hidden');
-      // Reset webtoon scroll when entering scene 3
+    function showScene(show) {
+      allScenes.forEach(s => {
+        if (s === show) s.classList.remove('hidden');
+        else s.classList.add('hidden');
+      });
       if (show === sceneWebtoon) sceneWebtoon.scrollTop = 0;
+      if (show === sceneAcademy) sceneAcademy.scrollTop = 0;
+      // hide back-to-top buttons when leaving their scenes
+      btnTopAcademy.classList.remove('visible');
+      btnTop.classList.remove('visible');
     }
 
-    btnStart.addEventListener('click', () => showScene(sceneNext, sceneTitle, sceneWebtoon));
-    btnBack.addEventListener('click',  () => showScene(sceneTitle, sceneNext, sceneWebtoon));
+    btnStart.addEventListener('click',       () => showScene(sceneNext));
+    btnBack.addEventListener('click',        () => showScene(sceneTitle));
+    menuWebtoon.addEventListener('click',    () => showScene(sceneWebtoon));
+    btnBackWebtoon.addEventListener('click', () => showScene(sceneNext));
+    menuAcademy.addEventListener('click',    () => showScene(sceneAcademy));
+    btnBackAcademy.addEventListener('click', () => showScene(sceneNext));
 
-    menuWebtoon.addEventListener('click', () => showScene(sceneWebtoon, sceneTitle, sceneNext));
-    btnBackWebtoon.addEventListener('click', () => showScene(sceneNext, sceneWebtoon, sceneTitle));
-
-    // Back to top — show after scrolling down 300px
+    // Back to top — webtoon
     sceneWebtoon.addEventListener('scroll', () => {
-      if (sceneWebtoon.scrollTop > 300) {
-        btnTop.classList.add('visible');
-      } else {
-        btnTop.classList.remove('visible');
-      }
+      btnTop.classList.toggle('visible', sceneWebtoon.scrollTop > 300);
     });
-
     btnTop.addEventListener('click', () => {
       sceneWebtoon.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Back to top — academy
+    sceneAcademy.addEventListener('scroll', () => {
+      btnTopAcademy.classList.toggle('visible', sceneAcademy.scrollTop > 300);
+    });
+    btnTopAcademy.addEventListener('click', () => {
+      sceneAcademy.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Lightbox
+    document.querySelectorAll('.academy-card').forEach(card => {
+      card.addEventListener('click', () => {
+        lightboxImg.src = card.dataset.img;
+        lightbox.classList.add('active');
+      });
+    });
+    lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
+    lightboxImg.addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') lightbox.classList.remove('active');
     });
   </script>
 </body>
