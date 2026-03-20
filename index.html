@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사라진 별에 별들이 모여든다</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* ── Scene wrapper ── */
+    .scene {
+      position: fixed;
+      inset: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .scene.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ── Background images ── */
+    .bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* ── Scene 1 : title screen ── */
+    #scene-title .bg {
+      background-image: url('resource/Desktop - 1.png');
+    }
+
+    .title-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .title-img {
+      width: 608px;
+      height: 608px;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      /* subtle float animation */
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .btn-start {
+      cursor: pointer;
+      width: 203px;
+      height: 73px;
+      object-fit: contain;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      /* gentle pulse */
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .btn-start:hover {
+      transform: scale(1.07);
+      filter: brightness(1.25) drop-shadow(0 0 14px rgba(150, 220, 255, 0.9));
+    }
+
+    .btn-start:active {
+      transform: scale(0.97);
+    }
+
+    /* ── Scene 2 : after-start screen ── */
+    #scene-next .bg {
+      background-image: url('resource/Desktop - 2.png');
+    }
+
+    @font-face {
+      font-family: 'HeirofLight';
+      src: url('resource/HeirofLightOTFBold.otf') format('opentype');
+      font-weight: 700;
+    }
+
+    .scene2-layout {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* fixed design canvas: 1440×1024 */
+      container-type: size;
+    }
+
+    .scene2-inner {
+      width: 1440px;
+      height: 1024px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* scale down uniformly when viewport is smaller */
+      transform-origin: center center;
+    }
+
+    /* Back to title */
+    .back-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      position: absolute;
+      top: 56px;
+      left: 72px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      font-family: 'HeirofLight', 'Sandoll HeirofLight', serif;
+      font-size: 28px;
+      font-weight: 700;
+      font-style: normal;
+      line-height: normal;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    .back-btn img {
+      width: 10px;
+      height: auto;
+    }
+
+    /* Menu boxes row */
+    .menu-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .menu-box {
+      width: 380px;
+      height: 280px;
+      background: rgba(0, 0, 0, 0.50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .menu-box:hover {
+      background: rgba(0, 0, 0, 0.70);
+      transform: translateY(-4px);
+    }
+
+    .menu-box span {
+      color: #fff;
+      font-family: 'HeirofLight', 'Sandoll HeirofLight', serif;
+      font-size: 28px;
+      font-weight: 700;
+      font-style: normal;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Scene 3 : Webtoon ── */
+    #scene-webtoon {
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #000;
+    }
+
+    .webtoon-strip {
+      display: block;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .webtoon-strip img {
+      display: block;
+      width: 100%;
+      height: auto;
+      /* remove any gap between images */
+      line-height: 0;
+    }
+
+    /* Fixed back button for Scene 3 (stays on screen while scrolling) */
+    .back-btn-webtoon {
+      position: fixed;
+      top: 40px;
+      left: 48px;
+      z-index: 100;
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+      font-family: 'HeirofLight', 'Sandoll HeirofLight', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: normal;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    }
+
+    .back-btn-webtoon:hover { opacity: 0.75; }
+
+    .back-btn-webtoon img {
+      width: 10px;
+      height: auto;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+    }
+
+    /* Back to top button — fixed bottom right */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 100;
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, background 0.2s;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .back-to-top svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(150, 220, 255, 0.5)); }
+      50%       { filter: brightness(1.15) drop-shadow(0 0 18px rgba(150, 220, 255, 0.85)); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scene 1 : title -->
+  <div class="scene" id="scene-title">
+    <div class="bg"></div>
+    <div class="title-content">
+      <img class="title-img" src="resource/star_title.png" alt="사라진 별에 별들이 모여든다">
+      <img class="btn-start" src="resource/btn_start.png" alt="START" id="btn-start">
+    </div>
+  </div>
+
+  <!-- Scene 3 : Webtoon -->
+  <div class="scene hidden" id="scene-webtoon">
+
+    <!-- Fixed back button -->
+    <button class="back-btn-webtoon" id="btn-back-webtoon">
+      <img src="resource/Vector 1.svg" alt="◀">
+      Back
+    </button>
+
+    <!-- Webtoon panels stacked seamlessly -->
+    <div class="webtoon-strip">
+      <img src="resource/p1.png" alt="webtoon page 1">
+      <img src="resource/p2.png" alt="webtoon page 2">
+      <img src="resource/p3.png" alt="webtoon page 3">
+      <img src="resource/p4.png" alt="webtoon page 4">
+    </div>
+
+    <!-- Back to top button -->
+    <button class="back-to-top" id="btn-top" aria-label="Back to top">
+      <svg viewBox="0 0 24 24">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Scene 2 : Desktop - 2 -->
+  <div class="scene hidden" id="scene-next">
+    <div class="bg"></div>
+    <div class="scene2-layout">
+      <div class="scene2-inner" id="scene2-inner">
+
+        <!-- Back to the title -->
+        <button class="back-btn" id="btn-back">
+          <img src="resource/Vector 1.svg" alt="◀">
+          Back to the title
+        </button>
+
+        <!-- Three menu boxes -->
+        <div class="menu-row">
+          <div class="menu-box"><span>ACADEMY</span></div>
+          <div class="menu-box"><span>CHARACTER</span></div>
+          <div class="menu-box" id="menu-webtoon"><span>WEBTOON</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btnStart      = document.getElementById('btn-start');
+    const btnBack       = document.getElementById('btn-back');
+    const btnBackWebtoon= document.getElementById('btn-back-webtoon');
+    const menuWebtoon   = document.getElementById('menu-webtoon');
+    const btnTop        = document.getElementById('btn-top');
+    const sceneTitle    = document.getElementById('scene-title');
+    const sceneNext     = document.getElementById('scene-next');
+    const sceneWebtoon  = document.getElementById('scene-webtoon');
+    const inner         = document.getElementById('scene2-inner');
+
+    // Scale scene2 canvas to always fit the viewport
+    function scaleInner() {
+      const scaleX = window.innerWidth  / 1440;
+      const scaleY = window.innerHeight / 1024;
+      const scale  = Math.min(scaleX, scaleY);
+      inner.style.transform = `scale(${scale})`;
+    }
+    scaleInner();
+    window.addEventListener('resize', scaleInner);
+
+    // Scene transitions
+    function showScene(show, ...hide) {
+      hide.forEach(s => s.classList.add('hidden'));
+      show.classList.remove('hidden');
+      // Reset webtoon scroll when entering scene 3
+      if (show === sceneWebtoon) sceneWebtoon.scrollTop = 0;
+    }
+
+    btnStart.addEventListener('click', () => showScene(sceneNext, sceneTitle, sceneWebtoon));
+    btnBack.addEventListener('click',  () => showScene(sceneTitle, sceneNext, sceneWebtoon));
+
+    menuWebtoon.addEventListener('click', () => showScene(sceneWebtoon, sceneTitle, sceneNext));
+    btnBackWebtoon.addEventListener('click', () => showScene(sceneNext, sceneWebtoon, sceneTitle));
+
+    // Back to top — show after scrolling down 300px
+    sceneWebtoon.addEventListener('scroll', () => {
+      if (sceneWebtoon.scrollTop > 300) {
+        btnTop.classList.add('visible');
+      } else {
+        btnTop.classList.remove('visible');
+      }
+    });
+
+    btnTop.addEventListener('click', () => {
+      sceneWebtoon.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
